@@ -4,7 +4,7 @@ class FoursquareAdaptor
       "bus" => '4bf58dd8d48988d1fe931735',
       "metro" => '4bf58dd8d48988d1fd931735',
       "hospital" => '4bf58dd8d48988d196941735',
-      "gym" => '4bf58dd8d48988d196941735',
+      "gym" => '4bf58dd8d48988d176941735',
       "police" => '4bf58dd8d48988d12e941735',
       "fire" => '4bf58dd8d48988d12c941735',
       "park" => '4bf58dd8d48988d163941735',
