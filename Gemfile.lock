@@ -133,7 +133,7 @@ DEPENDENCIES
   foursquare2!
   google_places!
   heroku
-  json
+  json (~> 1.5.1)
   multi_json (>= 0.0.5, < 2.0.0)
   rails (= 3.0.5)
   ruby-debug19
