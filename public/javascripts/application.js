@@ -169,9 +169,14 @@ $(function() {
       .append($('<div class="report-image"/>'))
       .append(
         $('<div />', {
-          'class': 'report-text',
+          'class': 'report-popup',
         })
-        .text(text)
+          .append(
+            $('<div />', {
+              'class': 'report-text',
+            })
+            .text(text)
+          )
       )
       .mouseenter(function() {
         hideMarkers();
@@ -192,7 +197,7 @@ $(function() {
   }
 
   function add_walking_time (key, time) {
-    $('#' + key + '_row').append($('<div>', {
+    $('#' + key + '_row report-popup').append($('<div>', {
       'class': 'walking_distance'
     }).append(time));
   }
