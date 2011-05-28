@@ -1,7 +1,7 @@
 search_url = '/location/find'
 
 getVenuesNear = (lat, lng, category, callback) ->
-  params = {lat: lat, lng: lng, cat: category, radius: 1000}
+  params = {lat: lat, lng: lng, cat: category}
   $.getJSON search_url, params, callback
 
 @foursquare =

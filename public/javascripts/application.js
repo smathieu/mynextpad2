@@ -10,23 +10,22 @@ function distance(lat1, lng1, lat2, lng2) {
   return Math.sqrt(lat*lat + lng*lng );
 }
 
-function calcDistances(latlng, data) {
-  return $.map(data, function(dat, i) {
-    var d = $.extend({}, dat);
-    var loc = d;
-    var lat = Math.abs(loc.lat - latlng.lat);
-    var lng = Math.abs(loc.lng - latlng.lng);
-    d.dist = Math.sqrt(lat*lat + lng*lng );
-    return d;
+function calcDistances(lat, lng, items) {
+  return $.map(items, function(dat, i) {
+    var loc = $.extend({}, dat);
+    var llat = Math.abs(loc.lat - lat);
+    var llng = Math.abs(loc.lng - lng);
+    dat.dist = Math.sqrt(llat * llat + llng * llng );
+    return dat;
   });
 }
 
-function closestItems(latlng, data, num) {
-  var data = calcDistances(latlng, data);
-  data.sort(function(a, b) {
+function closestItems(lat, lng, items, num) {
+  var items = calcDistances(lat, lng, items);
+  items.sort(function(a, b) {
     return a.dist - b.dist;
   });
-  return data.slice(0, num);
+  return items.slice(0, num);
 }
 
 $(function() {
@@ -230,6 +229,7 @@ $(function() {
 
   function showLocalVenue(lat, lng, category) {
     foursquare.getVenuesNear(lat, lng, category, function(items) {
+      items = closestItems(lat, lng, items, 5);
       for (var i = 0; i < 5; i++) {
         var item = items[i];
         if (item) {
