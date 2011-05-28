@@ -167,17 +167,6 @@ $(function() {
         'class': 'report_row ' + key,
       })
       .append($('<div class="report-image"/>'))
-      .append(
-        $('<div />', {
-          'class': 'report-popup',
-        })
-          .append(
-            $('<div />', {
-              'class': 'report-text',
-            })
-            .text(text)
-          )
-      )
       .mouseenter(function() {
         hideMarkers();
         showMarkersFor(key);
@@ -193,11 +182,34 @@ $(function() {
         showMarkersFor(key);
         setSelected(key);
       })
-    .appendTo($('#report'));
+      .qtip({
+        content: {
+          prerender: true,
+          text: $('<div />', { id: key + '_tooltip' })
+            .append($('<div />').text(text)),
+        },
+        show: {
+          delay: 50
+        },
+        hide: {
+          delay: 50
+        },
+        position: {
+          corner: {
+            target: 'bottomMiddle',
+            tooltip: 'topMiddle'
+          }
+        },
+        style: {
+          tip: 'topMiddle',
+          name: 'blue'
+        }
+      })
+      .appendTo($('#report'));
   }
 
   function add_walking_time (key, time) {
-    $('#' + key + '_row report-popup').append($('<div>', {
+    $('#' + key + '_tooltip').append($('<div>', {
       'class': 'walking_distance'
     }).append(time));
   }
