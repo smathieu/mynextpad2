@@ -194,7 +194,7 @@ $(function() {
     $('#report').html('')
   }
   function addReportRow(key, text) {
-    return $('<li />', {
+    var li = $('<li />', {
         id: key + '_row',
         'class': 'report_row ' + key,
       })
@@ -250,8 +250,38 @@ $(function() {
           tip: 'topMiddle',
           name: 'blue'
         }
-      })
-      .appendTo($('#report'));
+      });
+    if (key == 'all') {
+      li.appendTo($('#report'));
+    }
+    else {
+
+      // Go through and find all the markers in the list before this one
+      var i = 0;
+      for (i in MARKER_KEYS) {
+        if (MARKER_KEYS[i] == key) {
+          break;
+        }
+      }
+      var prev_keys = MARKER_KEYS.slice(0, i);
+
+      // Go backward through the list to find any previous ones that we can put ourselves after
+      prev_keys.reverse();
+      var found = false;
+      for (i in prev_keys) {
+        var el = $('.report_row.' + prev_keys[i]);
+        if (el.size() != 0) {
+          li.insertAfter(el);
+          found = true;
+          break;
+        }
+      }
+
+      // If there aren't any others loaded yet, just put it after 'all'
+      if (!found) {
+        li.insertAfter($('.report_row.all'));
+      }
+    }
   }
 
   function add_walking_time (key, time) {
