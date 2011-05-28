@@ -4,10 +4,16 @@
   }
 })(jQuery)
 
+function distance(lat1, lng1, lat2, lng2) {
+  var lat = Math.abs(lat1 - lat2);
+  var lng = Math.abs(lng1 - lng2);
+  return Math.sqrt(lat*lat + lng*lng );
+}
+
 function calcDistances(latlng, data) {
   return $.map(data, function(dat, i) {
     var d = $.extend({}, dat);
-    var loc = d.location?d.location:d;
+    var loc = d;
     var lat = Math.abs(loc.lat - latlng.lat);
     var lng = Math.abs(loc.lng - latlng.lng);
     d.dist = Math.sqrt(lat*lat + lng*lng );
@@ -205,203 +211,26 @@ $(function() {
     });
   }
 
-  function showLocalGroceryStores (lat, lng) {
-    foursquare.getGroceryStoresNear(lat, lng, function(items) {
-      items = closestItems({lat: lat, lng:lng}, items, 15);
+  function showLocalVenue(lat, lng, category) {
+    foursquare.getVenuesNear(lat, lng, category, function(items) {
       for (var i = 0; i < 5; i++) {
         var item = items[i];
         if (item) {
-          placeMarker('grocery', item.location, 'Grocery ' + item.name, undefined, {icon : item.categories[0].icon});
+          placeMarker(category, {lat: item.lat, lng: item.lng}, category + ' ' + item.name, undefined, {icon : item.icon});
         }
       };
 
       var item = items[0];
       if (item) {
-      var loc = item.location;
+        var loc = {lat: item.lat, lng: item.lng};
 
-        addReportRow('grocery',
-          "The closest grocery store is " +
-          items[0].name +
-          " and is located " +
-          items[0].location.distance +
-          " ft from your address."
+        addReportRow(category,
+          "The closest " + category + " is " +
+          item.name
          );
-        fs_add_walking_time('grocery', lat, lng, loc);
+        fs_add_walking_time(category, lat, lng, loc);
       }
     });
-  }
-
-  function showLocalBixiStations(loc) {
-    var bixis = closestItems(loc, bixi.stations, 20).filter(function(i) {return i.dist < 0.02});
-    if (bixis.length == 0) return;
-    var bixis = closestItems(loc, bixi.stations, 20);
-    for (var i = 0, len = bixis.length; i < len; i++) {
-      if (bixis[i].dist < 0.01) {
-        placeMarker('bixi', bixis[i], 'Bixi station at ' + bixis[i].name, undefined, {icon: 'images/markers/biximarker.png'});
-      }
-    }
-    var item = bixis[0];
-    addReportRow('bixi', "The closest bixi station is at " + item.name);
-    fs_add_walking_time('bixi', loc.lat, loc.lng, item);
-  }
-
-  function showLocalBusStops(lat, lng) {
-    foursquare.getBusStopsNear(lat, lng, function(items) {
-      var dat = closestItems({lat: lat, lng: lng}, items, 20);
-      for (var i = 0, len = dat.length; i < len; i++) {
-        placeMarker('bus', dat[i].location, 'Bus station at ' + dat[i].name, undefined, {icon : dat[i].categories[0].icon});
-      }
-      if (dat[0]) {
-        addReportRow('bus', "The closest Bus station is " + dat[0].name);
-        fs_add_walking_time('bus', lat, lng, dat[0].location);
-      }
-    });
-  }
-  function showLocalMetroStops(lat, lng) {
-    foursquare.getMetroStopsNear(lat, lng, function(items) {
-      var dat = closestItems({lat: lat, lng: lng}, items, 10);
-      for (var i = 0, len = dat.length; i < len; i++) {
-        placeMarker('metro', dat[i].location, 'Metro station at ' + dat[i].name, undefined, {icon : dat[i].categories[0].icon});
-      }
-      if (dat[0]) {
-        addReportRow('metro', "The closest Metro station is " + dat[0].name);
-        fs_add_walking_time('metro', lat, lng, dat[0].location);
-      }
-    });
-  }
-  function showLocalGyms(lat, lng) {
-    foursquare.getGymsNear(lat, lng, function(items) {
-      var dat = closestItems({lat: lat, lng: lng}, items, 10);
-      for (var i = 0, len = dat.length; i < len; i++) {
-        placeMarker('gym', dat[i].location, 'Gym at ' + dat[i].name, undefined, {icon: dat[i].categories[0].icon});
-      }
-      if (dat[0]) {
-        addReportRow('gym', "The closest Gym is " + dat[0].name);
-        fs_add_walking_time('gym', lat, lng, dat[0].location);
-      }
-    });
-  }
-
-  function showLocalHospitals(lat, lng) {
-    foursquare.getHospitalsNear(lat, lng, function(items) {
-      var dat = closestItems({lat: lat, lng: lng}, items, 5);
-      for (var i = 0, len = dat.length; i < len; i++) {
-        placeMarker('hospital', dat[i].location, 'Hospital at ' + dat[i].name, undefined, {icon : dat[i].categories[0].icon});
-      }
-      if (dat[0]) {
-        addReportRow('hospital', "The closest Hospital is " + dat[0].name);
-        fs_add_walking_time('hospital', lat, lng, dat[0].location);
-      }
-    });
-  }
-
-  function showLocalConvenienceStore(lat, lng) {
-    foursquare.getConvenienceStoresNear(lat, lng, function(items) {
-      var dat = closestItems({lat: lat, lng: lng}, items, 5);
-      for (var i = 0, len = dat.length; i < len; i++) {
-        placeMarker('convenience', dat[i].location, 'Convenience Store ' + dat[i].name, undefined, {icon : dat[i].categories[0].icon});
-      }
-      if (dat[0]) {
-        addReportRow('convenience', "The closest Convenience Store is " + dat[0].name);
-        fs_add_walking_time('convenience', lat, lng, dat[0].location);
-      }
-    });
-  }
-
-
- function showLocalFireStations(lat, lng) {
-    foursquare.getFireNear(lat, lng, function(items) {
-      var dat = closestItems({lat: lat, lng: lng}, items, 5);
-      for (var i = 0, len = dat.length; i < len; i++) {
-        placeMarker('fire', dat[i].location, 'Fire Station at ' + dat[i].name, undefined, {icon : dat[i].categories[0].icon});
-      }
-      if (dat[0]) {
-        addReportRow('fire', "The closest Fire station is " + dat[0].name);
-        fs_add_walking_time('fire', lat, lng, dat[0].location);
-      }
-    });
-  }
-
- function showLocalPoliceStations(lat, lng) {
-    foursquare.getPoliceNear(lat, lng, function(items) {
-      var dat = closestItems({lat: lat, lng: lng}, items, 5);
-      for (var i = 0, len = dat.length; i < len; i++) {
-        placeMarker('police', dat[i].location, 'Police station at ' + dat[i].name, undefined, {icon : dat[i].categories[0].icon});
-      }
-      if (dat[0]) {
-        addReportRow('police', "The closest Police station is " + dat[0].name);
-        fs_add_walking_time('police', lat, lng, dat[0].location);
-      }
-    });
-  }
-
-  function showLocalParks(lat, lng) {
-    foursquare.getParksNear(lat, lng, function(items) {
-      var dat = closestItems({lat: lat, lng: lng}, items, 2);
-      for (var i = 0, len = dat.length; i < len; i++) {
-        placeMarker('park', dat[i].location, 'Park at ' + dat[i].name, undefined, {icon : dat[i].categories[0].icon});
-      }
-      if (dat[0]) {
-        addReportRow('park', "The closest Park is " + dat[0].name);
-        fs_add_walking_time('park', lat, lng, dat[0].location);
-      }
-    });
-  }
-
-  function showLocalSchools(lat, lng) {
-    foursquare.getSchoolsNear(lat, lng, function(items) {
-      var dat = closestItems({lat: lat, lng: lng}, items, 10);
-      for (var i = 0, len = dat.length; i < len; i++) {
-        placeMarker('school', dat[i].location, 'School at ' + dat[i].name, undefined, {icon: 'https://foursquare.com/img/categories/building/default.png'});
-      }
-      if (dat[0]) {
-        addReportRow('school', "The closest School is " + dat[0].name);
-        fs_add_walking_time('school', lat, lng, dat[0].location);
-      }
-    });
-  }
-
-  function showLocalDrugStores(lat, lng) {
-    foursquare.getDrugstoresNear(lat, lng, function(items) {
-      var dat = closestItems({lat: lat, lng: lng}, items, 2);
-      for (var i = 0, len = dat.length; i < len; i++) {
-        placeMarker('drugstore', dat[i].location, 'Drugstore at ' + dat[i].name, undefined, {icon : dat[i].categories[0].icon});
-      }
-      if (dat[0]) {
-        addReportRow('drugstore', "The closest Drugstore is " + dat[0].name);
-        fs_add_walking_time('drugstore', lat, lng, dat[0].location);
-      }
-    });
-  }
-
-  function showLocalFood(lat, lng) {
-    foursquare.getVenuesNear(lat, lng, function(data) {
-
-      // Filter for things with under the primary category 'Food'
-      items = data.filter(function(val) {
-        var cats = val.categories;
-        for (var i = 0; i < cats.length; i++) {
-          var parents = cats[i].parents;
-          for (var j = 0; j < parents.length; j++) {
-            if (parents[j] == 'Food') {
-              return true;
-            }
-          }
-        }
-        return false;
-      });
-
-      for (var i = 0; i < 20; i++) {
-        if (items[i]) {
-          placeMarker('food', items[i].location, 'Food at ' + items[i].name, undefined, {icon: 'https://foursquare.com/img/categories/food/default.png'});
-        }
-      }
-      if (items[0]) {
-        addReportRow('food', "The closest Food place is " + items[0].name);
-        fs_add_walking_time('food', lat, lng, items[0].location);
-      }
-
-    }, {query: 'food'});
   }
 
   function codeAddress(address) {
@@ -422,26 +251,15 @@ $(function() {
         var loc = { lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()};
         addReportRow('all', "Show all markers");
         setSelected('all');
-        showLocalGroceryStores(marker.getPosition().lat(), marker.getPosition().lng());
-        showLocalBixiStations(loc);
-        showLocalBusStops(loc.lat, loc.lng);
-        showLocalMetroStops(loc.lat, loc.lng);
-        showLocalGyms(loc.lat, loc.lng);
-        showLocalPoliceStations(loc.lat, loc.lng);
-        showLocalFireStations(loc.lat, loc.lng);
-        showLocalHospitals(loc.lat, loc.lng);
-        showLocalParks(loc.lat, loc.lng);
-        showLocalSchools(loc.lat, loc.lng);
-        showLocalFood(loc.lat, loc.lng);
-        showLocalConvenienceStore(loc.lat, loc.lng);
-        showLocalDrugStores(loc.lat, loc.lng);
+
+        $.each(MARKER_KEYS, function(i, category) {
+          showLocalVenue(loc.lat, loc.lng, category);
+        });
       } else {
         $('.error').show();
       }
     });
   }
-
-
 
   $('#search_form').submit(function(event) {
     event.preventDefault()

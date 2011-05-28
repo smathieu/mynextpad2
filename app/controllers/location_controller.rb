@@ -1,5 +1,15 @@
 class LocationController < ApplicationController
   def find
-    render :json => GP_CLIENT.spots(params[:lat], params[:lng], :types => params[:cat])
+    lat = params[:lat]
+    lng = params[:lng]
+    category = params[:cat]
+
+    if GooglePlacesAdaptor.supports_category?(category)
+      adaptor = GooglePlacesAdaptor
+    else
+      adaptor = FoursquareAdaptor
+    end
+
+    render :json => adaptor.search(lat, lng, category)
   end
 end
