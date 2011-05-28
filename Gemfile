@@ -15,5 +15,5 @@ group :development, :test do
 end
 
 group :deploy do
-  gem 'heroku'
+  gem 'heroku' 
 end
