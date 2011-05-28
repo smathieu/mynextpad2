@@ -190,10 +190,11 @@ $(function() {
   }
 
   function resetReports() {
+    $('#report li').qtip('destroy');
     $('#report').html('')
   }
   function addReportRow(key, text) {
-    return $('<li>', {
+    return $('<li />', {
         id: key + '_row',
         'class': 'report_row ' + key,
       })
