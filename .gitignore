@@ -4,3 +4,5 @@ log/*.log
 tmp/
 *.swp
 tags
+
+public/javascripts/foursquare.js
