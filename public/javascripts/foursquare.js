@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sat, 28 May 2011 17:06:40 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 28 May 2011 17:15:49 GMT from
  * /Users/logansmyth/projects/mynextpad2/app/coffeescripts/foursquare.coffee
  */
 
@@ -17,7 +17,7 @@
     BusStops: '4bf58dd8d48988d1fe931735',
     MetroStops: '4bf58dd8d48988d1fd931735',
     Hospitals: '4bf58dd8d48988d196941735',
-    Gyms: '4bf58dd8d48988d196941735',
+    Gyms: '4bf58dd8d48988d176941735',
     Police: '4bf58dd8d48988d12e941735',
     Fire: '4bf58dd8d48988d12c941735',
     Parks: '4bf58dd8d48988d163941735',

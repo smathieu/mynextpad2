@@ -10,7 +10,7 @@ types =
   BusStops:           '4bf58dd8d48988d1fe931735',
   MetroStops:         '4bf58dd8d48988d1fd931735',
   Hospitals:          '4bf58dd8d48988d196941735',
-  Gyms:               '4bf58dd8d48988d196941735',
+  Gyms:               '4bf58dd8d48988d176941735',
   Police:             '4bf58dd8d48988d12e941735',
   Fire:               '4bf58dd8d48988d12c941735',
   Parks:              '4bf58dd8d48988d163941735',
