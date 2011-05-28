@@ -1,5 +1,8 @@
 Mynextpad::Application.routes.draw do
+  get "location/find"
+
   get "landing/show"
+  get "location/find"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
