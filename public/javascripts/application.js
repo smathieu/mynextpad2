@@ -71,6 +71,21 @@ $(function() {
   var CLIENT_ONLY_KEYS = ['bixi']
   var SERVER_ONLY_KEYS = ['grocery', 'police', 'hospital', 'fire', 'gym', 'metro', 'bus', 'park', 'food', 'convenience', 'drugstore', 'school']
   var MARKER_KEYS = CLIENT_ONLY_KEYS.concat(SERVER_ONLY_KEYS);
+
+  var HUMAN_CATEGORY = {
+    grocery: 'grocery store',
+    police: ' policate station',
+    fire: 'fire station',
+    metro: 'subway',
+    bus: 'bus stop',
+    food: 'restaurant',
+    convenience: 'convenience store'
+  };
+
+  function humanize(category) {
+    return HUMAN_CATEGORY[category] || category;
+  }
+
   var markers = {};
   var main_marker;
 
@@ -304,7 +319,7 @@ $(function() {
       for (var i = 0; i < 5; i++) {
         var item = items[i];
         if (item) {
-          placeMarker(category, {lat: item.lat, lng: item.lng}, category + ' ' + item.name, undefined, {icon : item.icon});
+          placeMarker(category, {lat: item.lat, lng: item.lng}, item.name, undefined, {icon : item.icon});
         }
       };
 
@@ -312,10 +327,7 @@ $(function() {
       if (item) {
         var loc = {lat: item.lat, lng: item.lng};
 
-        addReportRow(category,
-          "The closest " + category + " is " +
-          item.name
-         );
+        addReportRow(category, "The closest " + humanize(category) + " is " + item.name);
         fs_add_walking_time(category, lat, lng, loc);
       }
     });
