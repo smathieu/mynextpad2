@@ -68,7 +68,9 @@ $(function() {
     size: new google.maps.Size(50,50)
   });
 
-  var MARKER_KEYS = ['bixi', 'grocery', 'police', 'hospital', 'fire', 'gym', 'metro', 'bus', 'park', 'food', 'convenience', 'drugstore', 'school']
+  var CLIENT_ONLY_KEYS = ['bixi']
+  var SERVER_ONLY_KEYS = ['grocery', 'police', 'hospital', 'fire', 'gym', 'metro', 'bus', 'park', 'food', 'convenience', 'drugstore', 'school']
+  var MARKER_KEYS = CLIENT_ONLY_KEYS.concat(SERVER_ONLY_KEYS);
   var markers = {};
   var main_marker;
 
@@ -250,6 +252,20 @@ $(function() {
     });
   }
 
+  function showLocalBixiStations(lat, lng) {
+    var bixis = closestItems(lat, lng, bixi.stations, 20).filter(function(i) {return i.dist < 0.02});
+    if (bixis.length == 0) return;
+    for (var i = 0, len = bixis.length; i < len; i++) {
+      if (bixis[i].dist < 0.01) {
+        placeMarker('bixi', bixis[i], 'Bixi station at ' + bixis[i].name, undefined, {icon: 'images/markers/biximarker.png'});
+      }
+    }
+    var item = bixis[0];
+    addReportRow('bixi', "The closest bixi station is at " + item.name);
+    fs_add_walking_time('bixi', lat, lng, item);
+  }
+
+
   function codeAddress(address) {
     resetMarkers();
     resetReports();
@@ -269,9 +285,11 @@ $(function() {
         addReportRow('all', "Show all markers");
         setSelected('all');
 
-        $.each(MARKER_KEYS, function(i, category) {
+        $.each(SERVER_ONLY_KEYS, function(i, category) {
           showLocalVenue(loc.lat, loc.lng, category);
         });
+
+        showLocalBixiStations(loc.lat, loc.lng);
       } else {
         $('.error').show();
       }
