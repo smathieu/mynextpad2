@@ -74,17 +74,41 @@ $(function() {
   var markers = {};
   var main_marker;
 
-  var selected_key;
+  var selected_keys = [];
 
   $.each(MARKER_KEYS, function(i, key) {
     markers[key] = []
   });
 
-  function setSelected(key) {
-    selected_key = key;
+  function toggleSelected(key) {
     $('.report_row').removeClass('selected');
-    $('.report_row.' + key).addClass('selected');
+    if (key == 'all') {
+      selected_keys = [];
+      $('.report_row.all').addClass('selected');
+    }
+    else {
+      var found = false;
+      var i;
+      for (i in selected_keys) {
+        if (selected_keys[i] == key) {
+          found = true;
+          break;
+        }
+      }
+      if (found) {
+        selected_keys.splice(i, 1);
+      }
+      else {
+        selected_keys.push(key);
+      }
+
+      for (var i in selected_keys) {
+        $('.report_row.' + selected_keys[i]).addClass('selected');
+      }
+    }
+
   }
+
 
   function hideMarkersFor(key) {
     if (key == 'all') {
@@ -176,18 +200,32 @@ $(function() {
       .append($('<div class="report-image"/>'))
       .mouseenter(function() {
         hideMarkers();
-        showMarkersFor(key);
+        showMarkersFor( key );
         $(this).addClass('hover');
       })
       .mouseleave(function() {
         hideMarkers();
-        showMarkersFor(selected_key);
+        if (selected_keys.length == 0) {
+          showMarkersFor('all');
+        }
+        else {
+          $.each(selected_keys, function(i, key) {
+            showMarkersFor(key);
+          });
+        }
         $(this).removeClass('hover');
       })
       .click(function() {
         hideMarkers();
-        showMarkersFor(key);
-        setSelected(key);
+        toggleSelected(key);
+        if (selected_keys.length == 0) {
+          showMarkersFor('all');
+        }
+        else {
+          $.each(selected_keys, function(i, key) {
+            showMarkersFor(key);
+          });
+        }
       })
       .qtip({
         content: {
@@ -283,7 +321,7 @@ $(function() {
 
         var loc = { lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()};
         addReportRow('all', "Show all markers");
-        setSelected('all');
+        toggleSelected('all');
 
         $.each(SERVER_ONLY_KEYS, function(i, category) {
           showLocalVenue(loc.lat, loc.lng, category);

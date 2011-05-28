@@ -28,8 +28,8 @@ a:hover{text-decoration: underline;}
 /*REPORTS*/
 ul#report{margin:0;padding: 0; background-color:#fbfbfb;}
 li.report_row{float: left; background-color:#dedede; padding: 0px;margin:1px;border: 1px solid #ccc; border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px;}
-.report_row.hover{background-color:#e5e5e5;}
-.report_row.selected{background-color:#bdd1de; border-color: 1px solid #9bc3de;}
+.report_row.hover{background-color:#e5e5e5; border-color: #4766B3; }
+.report_row.selected{background-color:#bdd1de; border: 1px solid #4777c7;}
 
 /*REPORTS TEXT*/
 .report-text{width:268px; padding:30px 0 0 5px; font-size: 14px; display: none; }
